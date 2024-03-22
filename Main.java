@@ -21,7 +21,7 @@ import java.util.Scanner;
         HashFunction hashFunction = createHashFunction(hashFunctionType);
 
         
-        String inputData = "exampleData";
+        String inputData = "holi";
         String hashedData = hashFunction.hash(inputData);
         System.out.println("Datos Originales: " + inputData);
         System.out.println("Datos (Después del Hash): " + hashedData);
