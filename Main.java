@@ -9,64 +9,50 @@ elementos de forma más lenta que las demás clases.
  * @author Jose Donado
  */
 
- import java.io.File;
-
- import java.util.*;
- 
+import java.util.Scanner;
 
 
-
-public class Main {
+ public class Main {
     public static void main(String[] args) {
+        //HASH
+        int hashFunctionType = selectHashFunction();
+
+        // instancia de HASH
+        HashFunction hashFunction = createHashFunction(hashFunctionType);
+
         
-
-        // Mostrar opciones de configuración al usuario
-        int mapOption = selectMapImplementation();
-
-        // Crear fábrica de mapa
-        MapFactory mapFactory = new MapFactory();
-
-        // Seleccionar implementación de mapa
-        Map<String, Student> studentMap = mapFactory.getMap(mapOption);
-
-        // Mostrar los datos de los estudiantes
-        for (Map.Entry<String, Student> entry : studentMap.entrySet()) {
-            System.out.println("Clave: " + entry.getKey());
-            System.out.println("Estudiante: " + entry.getValue());
-        }
+        String inputData = "exampleData";
+        String hashedData = hashFunction.hash(inputData);
+        System.out.println("Datos Originales: " + inputData);
+        System.out.println("Datos (Después del Hash): " + hashedData);
     }
 
-    public static IngresoManual {
-        
-    }
-
-    private static int selectMapImplementation() {
+    private static int selectHashFunction() {
         Scanner scanner = new Scanner(System.in);
-        System.out.println("Seleccione la implementación del Map:");
-        System.out.println("1. HashMap");
-        System.out.println("2. TreeMap");
-        System.out.println("3. LinkedHashMap");
-        System.out.print("Opción: ");
+        System.out.println("Seleccione la función Hash:");
+        System.out.println("1. Orgánica");
+        System.out.println("2. MD5");
+        System.out.println("3. SHA");
         int option = scanner.nextInt();
         scanner.close();
         return option;
     }
-}
 
-class MapFactory {
-    public Map<String, Student> getMap(int option) {
-        switch (option) {
+    private static HashFunction createHashFunction(int hashFunctionType) {
+        switch (hashFunctionType) {
             case 1:
-                return new HashMap<>();
+                return new OrganicHashFunction();
             case 2:
-                return new TreeMap<>();
+                return new MD5HashFunction();
             case 3:
-                return new LinkedHashMap<>();
+                return new SHAHashFunction();
             default:
-                throw new IllegalArgumentException("Opción no válida");
+                throw new IllegalArgumentException("Tipo de función hash no válido");
         }
     }
 }
+
+
 
 
 
