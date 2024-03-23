@@ -1,55 +1,60 @@
-/**
- * HashMap: Los elementos que inserta en el map no tendrán un orden específico. No aceptan claves duplicadas ni valores nulos.
-TreeMap: El Mapa lo ordena de forma "natural". Por ejemplo, si la clave son valores enteros (como luego veremos), los ordena de menos a mayor.
-LinkedHashMap: Inserta en el Map los elementos en el orden en el que se van insertando; 
-es decir, que no tiene una ordenación de los elementos como tal, por lo que esta clase realiza las búsquedas de los 
-elementos de forma más lenta que las demás clases.
- */
-/**
- * @author Jose Donado
- */
-
-
- import java.io.FileReader;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
- import java.util.Scanner;
-
-import org.json.simple.JSONArray;
-import org.json.simple.JSONObject;
-import org.json.simple.parser.JSONParser;
+import java.util.Scanner;
 
 public class Main {
-public static void main(String[] args) {
-        //Instancias de mis map
-        Map<String, Estudiante> estudiantesMap = new HashMap<>();
+    public static void main(String[] args) {
+        // Instancias de mis map
+        Map<String, Estudiante> estudiantesMap = null;
         MapaNacionalidad mapaNacionalidad = new MapaNacionalidad();
 
         // Escoja el tipo de MAP
         MapType mapType = selectMapType();
+        switch (mapType) {
+            case HASHMAP:
+                estudiantesMap = MapFactory.createMap(MapType.HASHMAP);
+                break;
+            case TREEMAP:
+                estudiantesMap = MapFactory.createMap(MapType.TREEMAP);
+                break;
+            case LINKEDHASHMAP:
+                estudiantesMap = MapFactory.createMap(MapType.LINKEDHASHMAP);
+                break;
+            default:
+                throw new IllegalArgumentException("Tipo de mapa no válido");
+        }
+
         // Solicitar al usuario que seleccione el tipo de función hash
         HashFunction hashFunction = selectHashFunction();
 
-        
         // Leer el contenido del archivo JSOn para poder almacenar los datos en el mapa
         LectorArchivo.leerEstudiantes(estudiantesMap, mapaNacionalidad, hashFunction);
 
-        // Ejemplo de búsqueda por nacionalidad
-        List<Estudiante> estudiantesPorNacionalidad = mapaNacionalidad.obtenerEstudiantesPorNacionalidad("Nigeria");
-        System.out.println("Estudiantes de Nigeria:");
-        for (Estudiante estudiante : estudiantesPorNacionalidad) {
-            System.out.println(estudiante);
-        }
+        // Mantener la interfaz abierta para permitir más operaciones
+        while (true) {
+            // Mostrar opciones al usuario
+            mostrarOpciones();
 
-        // Ejemplo de búsqueda individual por email
-        String emailBuscado = "luctus.lobortis.class@aol.edu";
-        String hashedEmail = hashFunction.hash(emailBuscado);
-        Estudiante estudianteBuscado = estudiantesMap.get(hashedEmail);
-        if (estudianteBuscado != null) {
-            System.out.println("Estudiante encontrado: " + estudianteBuscado);
-        } else {
-            System.out.println("Estudiante con email " + emailBuscado + " no encontrado.");
+            // Leer la opción del usuario
+            int opcion = leerOpcion();
+
+            // Realizar la acción correspondiente según la opción seleccionada
+            switch (opcion) {
+                case 1:
+                    // Ejemplo de búsqueda por nacionalidad
+                    buscarPorNacionalidad(mapaNacionalidad);
+                    break;
+                case 2:
+                    // Ejemplo de búsqueda individual por email
+                    buscarPorEmail(estudiantesMap, hashFunction);
+                    break;
+                case 3:
+                    // Salir del programa
+                    System.out.println("Saliendo del programa...");
+                    return;
+                default:
+                    System.out.println("Opción no válida. Por favor, seleccione una opción válida.");
+            }
         }
     }
 
@@ -60,7 +65,7 @@ public static void main(String[] args) {
         System.out.println("2. TreeMap");
         System.out.println("3. LinkedHashMap");
         int option = scanner.nextInt();
-        scanner.nextLine(); 
+        scanner.nextLine(); // Limpiar el buffer del scanner
         switch (option) {
             case 1:
                 return MapType.HASHMAP;
@@ -73,11 +78,6 @@ public static void main(String[] args) {
         }
     }
 
-       
-    /**
-     * Seleccionar la funcion de HASH. Se dejó la orgánica por mera profilaxis
-     * @return
-     */
     private static HashFunction selectHashFunction() {
         Scanner scanner = new Scanner(System.in);
         System.out.println("Seleccione el tipo de función hash:");
@@ -85,20 +85,53 @@ public static void main(String[] args) {
         System.out.println("2. MD5");
         System.out.println("3. SHA-1");
         int option = scanner.nextInt();
-        scanner.nextLine();
-        scanner.close();
+        scanner.nextLine(); // Limpiar el buffer del scanner
         switch (option) {
             case 1:
                 return new OrganicHashFunction();
             case 2:
                 return new MD5HashFunction();
             case 3:
-                return new SHAHashFunction();
+                return new SHA1HashFunction();
             default:
-                throw new IllegalArgumentException("Tipo de función hash no válido. Escogé uno de los 3 números");
+                throw new IllegalArgumentException("Tipo de función hash no válido. Escoge uno de los 3 números");
         }
-        
     }
 
-   
+    private static void mostrarOpciones() {
+        System.out.println("Seleccione una opción:");
+        System.out.println("1. Buscar estudiantes por nacionalidad");
+        System.out.println("2. Buscar estudiante por email");
+        System.out.println("3. Salir");
+    }
+
+    private static int leerOpcion() {
+        Scanner scanner = new Scanner(System.in);
+        System.out.print("Ingrese su opción: ");
+        return scanner.nextInt();
+    }
+
+    private static void buscarPorNacionalidad(MapaNacionalidad mapaNacionalidad) {
+        Scanner scanner = new Scanner(System.in);
+        System.out.print("Ingrese la nacionalidad a buscar: ");
+        String nacionalidad = scanner.nextLine();
+        List<Estudiante> estudiantes = mapaNacionalidad.obtenerEstudiantesPorNacionalidad(nacionalidad);
+        System.out.println("Estudiantes de " + nacionalidad + ":");
+        for (Estudiante estudiante : estudiantes) {
+            System.out.println(estudiante);
+        }
+    }
+
+    private static void buscarPorEmail(Map<String, Estudiante> estudiantesMap, HashFunction hashFunction) {
+        Scanner scanner = new Scanner(System.in);
+        System.out.print("Ingrese el correo electrónico del estudiante a buscar: ");
+        String email = scanner.nextLine();
+        String hashedEmail = hashFunction.hash(email);
+        Estudiante estudiante = estudiantesMap.get(hashedEmail);
+        if (estudiante != null) {
+            System.out.println("Estudiante encontrado: " + estudiante);
+        } else {
+            System.out.println("Estudiante con email " + email + " no encontrado.");
+        }
+    }
 }
