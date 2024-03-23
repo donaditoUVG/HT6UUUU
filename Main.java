@@ -10,36 +10,70 @@ elementos de forma más lenta que las demás clases.
  */
 
 
+ import java.io.FileReader;
+ import java.util.Map;
  import java.util.Scanner;
 
+import org.json.simple.JSONArray;
+import org.json.simple.JSONObject;
+import org.json.simple.parser.JSONParser;
+
 public class Main {
-    public static void main(String[] args) {
-        //HASH
-        int hashFunctionType = selectHashFunction();
+public static void main(String[] args) {
 
-        // instancia de HASH
-        HashFunction hashFunction = createHashFunction(hashFunctionType);
+        // Escoja el tipo de MAP
+        MapType mapType = selectMapType();
+        // Solicitar al usuario que seleccione el tipo de función hash
+        HashFunction hashFunction = selectHashFunction();
 
-        String inputData = "holi";
-        String hashedData = hashFunction.hash(inputData);
-        System.out.println("Datos Originales: " + inputData);
-        System.out.println("Datos (Después del Hash): " + hashedData);
+        // Crear el mapa utilizando factory de map
+        Map<String, Estudiante> estudiantesMap = MapFactory.createMap(mapType);
+
+        // Leer el contenido del archivo JSOn para poder almacenar los datos en el mapa
+        LectorArchivo.leerEstudiantes(estudiantesMap, hashFunction);
+
+        // MOSTRAR EL MAPA PARA PODER VER NUESTRO PROCESO
+        System.out.println("Contenido del Mapa:");
+        for (Map.Entry<String, Estudiante> entry : estudiantesMap.entrySet()) {
+            System.out.println("Email: " + entry.getKey() + ", Estudiante: " + entry.getValue());
+        }
     }
 
-    private static int selectHashFunction() {
+    private static MapType selectMapType() {
         Scanner scanner = new Scanner(System.in);
-        System.out.println("Seleccione la función Hash:");
-        System.out.println("1. Orgánica");
+        System.out.println("Seleccione el tipo de mapa:");
+        System.out.println("1. HashMap");
+        System.out.println("2. TreeMap");
+        System.out.println("3. LinkedHashMap");
+        int option = scanner.nextInt();
+        scanner.nextLine(); // Limpiar el buffer del scanner
+        switch (option) {
+            case 1:
+                return MapType.HASHMAP;
+            case 2:
+                return MapType.TREEMAP;
+            case 3:
+                return MapType.LINKEDHASHMAP;
+            default:
+                throw new IllegalArgumentException("Tipo de mapa no válido");
+        }
+    }
+
+       
+    /**
+     * Seleccionar la funcion de HASH. Se dejó la orgánica por mera profilaxis
+     * @return
+     */
+    private static HashFunction selectHashFunction() {
+        Scanner scanner = new Scanner(System.in);
+        System.out.println("Seleccione el tipo de función hash:");
+        System.out.println("1. Orgánica (Sin modificar la llave)");
         System.out.println("2. MD5");
         System.out.println("3. SHA-1");
         int option = scanner.nextInt();
+        scanner.nextLine();
         scanner.close();
-        return option;
-    }
-
-    //Agarra uno de los cases
-    private static HashFunction createHashFunction(int hashFunctionType) {
-        switch (hashFunctionType) {
+        switch (option) {
             case 1:
                 return new OrganicHashFunction();
             case 2:
@@ -47,7 +81,10 @@ public class Main {
             case 3:
                 return new SHAHashFunction();
             default:
-                throw new IllegalArgumentException("Tipo de función hash no válido");
+                throw new IllegalArgumentException("Tipo de función hash no válido. Escogé uno de los 3 números");
         }
+        
     }
+
+   
 }

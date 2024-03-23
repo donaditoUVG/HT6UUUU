@@ -9,6 +9,7 @@ class MD5HashFunction implements HashFunction {
     //Sobrescribeee
     @Override
     public String hash(String input) {
+        
         try {
             MessageDigest md = MessageDigest.getInstance("MD5");
             byte[] messageDigest = md.digest(input.getBytes());
