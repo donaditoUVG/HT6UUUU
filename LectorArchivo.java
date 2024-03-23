@@ -5,7 +5,9 @@ import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 
 public class LectorArchivo {
-    public static void leerEstudiantes(Map<String, Estudiante> estudiantesMap, HashFunction hashFunction) {
+    
+    public static void leerEstudiantes(Map<String, Estudiante> estudiantesMap, MapaNacionalidad mapaNacionalidad, HashFunction hashFunction) {
+       
         JSONParser parser = new JSONParser();
         try (FileReader reader = new FileReader("res/estudiantes.json")) {
 
@@ -29,9 +31,11 @@ public class LectorArchivo {
 
                 // La clave sera el email porque es el unico que no se repite
                 String hashedEmail = hashFunction.hash(email);
-
-                // Agregando el estudiante al mapa
+                // Agregando el estudiante al mapa individual
                 estudiantesMap.put(hashedEmail, estudiante);
+
+                // Agregando el estudiante al mapa por nacionalidad
+                mapaNacionalidad.agregarEstudiantePorNacionalidad(country, estudiante);
             }
         } catch (Exception e) {
             e.printStackTrace();

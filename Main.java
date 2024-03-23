@@ -11,7 +11,9 @@ elementos de forma más lenta que las demás clases.
 
 
  import java.io.FileReader;
- import java.util.Map;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
  import java.util.Scanner;
 
 import org.json.simple.JSONArray;
@@ -20,22 +22,34 @@ import org.json.simple.parser.JSONParser;
 
 public class Main {
 public static void main(String[] args) {
+        //Instancias de mis map
+        Map<String, Estudiante> estudiantesMap = new HashMap<>();
+        MapaNacionalidad mapaNacionalidad = new MapaNacionalidad();
 
         // Escoja el tipo de MAP
         MapType mapType = selectMapType();
         // Solicitar al usuario que seleccione el tipo de función hash
         HashFunction hashFunction = selectHashFunction();
 
-        // Crear el mapa utilizando factory de map
-        Map<String, Estudiante> estudiantesMap = MapFactory.createMap(mapType);
-
+        
         // Leer el contenido del archivo JSOn para poder almacenar los datos en el mapa
-        LectorArchivo.leerEstudiantes(estudiantesMap, hashFunction);
+        LectorArchivo.leerEstudiantes(estudiantesMap, mapaNacionalidad, hashFunction);
 
-        // MOSTRAR EL MAPA PARA PODER VER NUESTRO PROCESO
-        System.out.println("Contenido del Mapa:");
-        for (Map.Entry<String, Estudiante> entry : estudiantesMap.entrySet()) {
-            System.out.println("Email: " + entry.getKey() + ", Estudiante: " + entry.getValue());
+        // Ejemplo de búsqueda por nacionalidad
+        List<Estudiante> estudiantesPorNacionalidad = mapaNacionalidad.obtenerEstudiantesPorNacionalidad("Nigeria");
+        System.out.println("Estudiantes de Nigeria:");
+        for (Estudiante estudiante : estudiantesPorNacionalidad) {
+            System.out.println(estudiante);
+        }
+
+        // Ejemplo de búsqueda individual por email
+        String emailBuscado = "luctus.lobortis.class@aol.edu";
+        String hashedEmail = hashFunction.hash(emailBuscado);
+        Estudiante estudianteBuscado = estudiantesMap.get(hashedEmail);
+        if (estudianteBuscado != null) {
+            System.out.println("Estudiante encontrado: " + estudianteBuscado);
+        } else {
+            System.out.println("Estudiante con email " + emailBuscado + " no encontrado.");
         }
     }
 
@@ -46,7 +60,7 @@ public static void main(String[] args) {
         System.out.println("2. TreeMap");
         System.out.println("3. LinkedHashMap");
         int option = scanner.nextInt();
-        scanner.nextLine(); // Limpiar el buffer del scanner
+        scanner.nextLine(); 
         switch (option) {
             case 1:
                 return MapType.HASHMAP;
