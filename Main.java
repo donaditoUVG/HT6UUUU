@@ -38,6 +38,7 @@ import java.util.Scanner;
         return option;
     }
 
+    //Agarra uno de los cases
     private static HashFunction createHashFunction(int hashFunctionType) {
         switch (hashFunctionType) {
             case 1:
