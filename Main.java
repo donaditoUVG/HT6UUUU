@@ -9,10 +9,10 @@ elementos de forma más lenta que las demás clases.
  * @author Jose Donado
  */
 
-import java.util.Scanner;
 
+ import java.util.Scanner;
 
- public class Main {
+public class Main {
     public static void main(String[] args) {
         //HASH
         int hashFunctionType = selectHashFunction();
@@ -20,7 +20,6 @@ import java.util.Scanner;
         // instancia de HASH
         HashFunction hashFunction = createHashFunction(hashFunctionType);
 
-        
         String inputData = "holi";
         String hashedData = hashFunction.hash(inputData);
         System.out.println("Datos Originales: " + inputData);
@@ -32,7 +31,7 @@ import java.util.Scanner;
         System.out.println("Seleccione la función Hash:");
         System.out.println("1. Orgánica");
         System.out.println("2. MD5");
-        System.out.println("3. SHA");
+        System.out.println("3. SHA-1");
         int option = scanner.nextInt();
         scanner.close();
         return option;
@@ -51,12 +50,3 @@ import java.util.Scanner;
         }
     }
 }
-
-
-
-
-
-
-
-
-
