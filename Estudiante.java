@@ -1,3 +1,6 @@
+import java.util.List;
+import java.util.Map;
+
 public class Estudiante {
     private String name;
     private String phone;
@@ -65,5 +68,25 @@ public class Estudiante {
                 ", postalZip='" + postalZip + '\'' +
                 ", country='" + country + '\'' +
                 '}';
+    }
+
+    // Método de búsqueda de estudiantes por llave seleccionada
+    public static Estudiante buscarEstudiantePorLlave(Map<String, Estudiante> estudiantesMap, String llave, HashFunction hashFunction) {
+        String hashedLlave = hashFunction.hash(llave); // Asegúrate de tener hashFunction disponible
+        return estudiantesMap.get(hashedLlave);
+    }
+
+    // Método de búsqueda de estudiantes por nacionalidad
+    public static List<Estudiante> buscarEstudiantesPorNacionalidad(MapaNacionalidad mapaNacionalidad, String nacionalidad) {
+        return mapaNacionalidad.obtenerEstudiantesPorNacionalidad(nacionalidad);
+    }
+
+    // Método para mostrar la información del estudiante en la consola
+    public void mostrarInformacionEstudianteEnConsola() {
+        System.out.println("Nombre: " + name);
+        System.out.println("Teléfono: " + phone);
+        System.out.println("Email: " + email);
+        System.out.println("Código Postal: " + postalZip);
+        System.out.println("País: " + country);
     }
 }
