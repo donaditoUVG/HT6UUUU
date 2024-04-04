@@ -1,4 +1,8 @@
 package src;
+
+/**
+ * Implementacion obtenida de CHATGPT
+ */
 public class BinarySearchTree<K extends Comparable<K>, V, F> {
     private TreeNode<K, V, F> root;
 
@@ -21,7 +25,7 @@ public class BinarySearchTree<K extends Comparable<K>, V, F> {
         } else if (cmp > 0) {
             node.setRight(insertRec(node.getRight(), key, value, frenchValue));
         } else {
-            // Key already exists, update the value
+            
             node.setValue(value);
             node.setFrenchValue(frenchValue);
         }

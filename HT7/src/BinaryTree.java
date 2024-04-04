@@ -1,6 +1,10 @@
 package src;
 
 /**
+ * @author Jose Donado
+ */
+
+/**
  * Clase para representar un árbol binario de búsqueda genérico.
  * Puede almacenar valores de cualquier tipo que sea Comparable.
  *
