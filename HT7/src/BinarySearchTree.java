@@ -10,42 +10,54 @@ public class BinarySearchTree<K extends Comparable<K>, V, F> {
         this.root = insertRec(this.root, key, value, frenchValue);
     }
 
-    private TreeNode<K, V, F> insertRec(TreeNode<K, V, F> root, K key, V value, F frenchValue) {
-        if (root == null) {
+    private TreeNode<K, V, F> insertRec(TreeNode<K, V, F> node, K key, V value, F frenchValue) {
+        if (node == null) {
             return new TreeNode<>(key, value, frenchValue);
         }
-        int cmp = key.compareTo(root.getKey());
+
+        int cmp = key.compareTo(node.getKey());
         if (cmp < 0) {
-            root.setLeft(insertRec(root.getLeft(), key, value, frenchValue));
+            node.setLeft(insertRec(node.getLeft(), key, value, frenchValue));
         } else if (cmp > 0) {
-            root.setRight(insertRec(root.getRight(), key, value, frenchValue));
+            node.setRight(insertRec(node.getRight(), key, value, frenchValue));
         } else {
-            root.setValue(value);
+            // Key already exists, update the value
+            node.setValue(value);
+            node.setFrenchValue(frenchValue);
         }
-        return root;
+
+        return node;
     }
 
     public V find(K key) {
         return findRec(this.root, key);
     }
 
-    private V findRec(TreeNode<K, V, F> root, K key) {
-        if (root == null) {
+    private V findRec(TreeNode<K, V, F> node, K key) {
+        if (node == null) {
             return null;
         }
-        int cmp = key.compareTo(root.getKey());
+
+        int cmp = key.compareTo(node.getKey());
         if (cmp < 0) {
-            return findRec(root.getLeft(), key);
+            return findRec(node.getLeft(), key);
         } else if (cmp > 0) {
-            return findRec(root.getRight(), key);
+            return findRec(node.getRight(), key);
         } else {
-            return root.getValue();
+            return node.getValue();
         }
     }
 
-    public TreeNode<K, V, F> getRoot() {
-        return root;
+    public void inOrderTraversal() {
+        inOrderTraversalRec(root);
     }
     
-
+    private void inOrderTraversalRec(TreeNode<K, V, F> node) {
+        if (node != null) {
+            inOrderTraversalRec(node.getLeft());
+            System.out.println("Traducciones: " + node.getKey() + ", " + node.getValue() + ", " + node.getFrenchValue());
+            inOrderTraversalRec(node.getRight());
+        }
+    }
+    
 }
